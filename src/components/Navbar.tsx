@@ -11,8 +11,13 @@ import {
 import Image from "next/image";
 import { ModeToggle } from "./client/DarkModeToggle";
 import Link from "next/link";
+import { auth, signOut } from "@/auth";
+import { Button } from "./ui/button";
 
-const Navbar = () => {
+const Navbar = async () => {
+  const session = await auth();
+  const image = session?.user?.image as string;
+
   return (
     <header className="flex items-center justify-between  py-5 ">
       <Link href={"/"}>
@@ -27,24 +32,44 @@ const Navbar = () => {
         </div>
       </Link>
       <nav>
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <Avatar>
-              <AvatarImage src="https://github.com/mohdfaizan5.png" />
-              <AvatarFallback>MF</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <ModeToggle />
-            </DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {session?.user ? (
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar>
+                <AvatarImage src={image} />
+                <AvatarFallback>MF</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <ModeToggle />
+              </DropdownMenuItem>
+              <DropdownMenuItem>Billing</DropdownMenuItem>
+              <DropdownMenuItem>Team</DropdownMenuItem>
+              <DropdownMenuItem>
+                <form
+                  action={async () => {
+                    "use server";
+                    await signOut();
+                  }}
+                >
+                  <Button className="w-full" variant={"destructive"}>Logout</Button>
+                </form>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        ) : (
+          <div className="sm:flex  hidden gap-2">
+            <Link href={"/login"}>
+              <Button variant={"outline"}>Login</Button>
+            </Link>
+            <Link href={"signup"}>
+              <Button variant={"default"}>Get started now</Button>
+            </Link>
+          </div>
+        )}
       </nav>
     </header>
   );

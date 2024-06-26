@@ -9,7 +9,9 @@ export function cn(...inputs: ClassValue[]) {
 export const connectToDB = async () => {
   try {
     if (mongoose.connections && mongoose.connections[0].readyState) return;
-    const connection = await mongoose.connect(process.env.DB_URI as string);
+    const connection = await mongoose.connect(process.env.MONGO_URI as string, {
+      dbName: "jobseekz"
+    });
     console.log(connection.connection.host, " Connected successfully ✅");
   } catch (error) {
     console.log(`❌❌❌ Mongodb connection error ${error}`);
