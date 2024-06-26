@@ -9,7 +9,9 @@ const page = ({params}: {params: {employee: string}}) => {
       <Navbar/>
       <MainBreadCrum/>
       <MainFilter/>
-      {params.employee}</div>
+      {params.employee}
+      
+      </div>
   )
 }
 

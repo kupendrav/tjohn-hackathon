@@ -1,5 +1,6 @@
 import NextAuth, { AuthError } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import Credentials from "next-auth/providers/credentials";
 import { User } from "@/models/user.model";
 import { connectToDB } from "./lib/utils";
 import { redirect } from "next/navigation";
@@ -9,7 +10,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     GoogleProvider({
       clientId: process.env.AUTH_GOOGLE_ID,
       clientSecret: process.env.AUTH_GOOGLE_SECRET,
-    }),
+}),
   ],
   callbacks: {
     signIn: async ({ user, account }) => {
@@ -35,7 +36,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email,
             image,
           });
-          redirect("/new");
+          // redirect("/new");
           return true;
         } catch (error) {
           throw new AuthError("Error while logging in...");

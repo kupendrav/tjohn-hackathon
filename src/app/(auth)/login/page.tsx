@@ -55,13 +55,13 @@ const page = async() => {
         <form
           action={async () => {
             "use server";
-            await signIn("google");
+            await signIn("google", {redirectTo:"/profile"});
           }}
           className="flex flex-col items-center"
         >
           <Button className="flex items-center gap-3 w-60" variant={"outline"}>
             <FaGoogle size={24} />
-            Login with Github
+            Login with Google
           </Button>
         </form>
       </section>
