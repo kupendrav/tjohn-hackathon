@@ -11,6 +11,7 @@ import StaggerGrid from "@/components/animations/StaggerGrid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { RealJob } from "@/lib/jobs";
+import { fetchAllJobsClient } from "@/lib/jobs-client";
 
 interface CompanyData {
   name: string;
@@ -26,9 +27,7 @@ export default function CompanyPage() {
   useEffect(() => {
     async function fetchCompanies() {
       try {
-        const res = await fetch("/api/jobs");
-        const data = await res.json();
-        const jobsList: RealJob[] = data.jobs || [];
+        const jobsList: RealJob[] = await fetchAllJobsClient();
 
         // Group jobs by company
         const companyMap = new Map<string, CompanyData>();

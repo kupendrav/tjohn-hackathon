@@ -5,9 +5,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  experimental: {
-    serverComponentsExternalPackages: ["mongoose", "pdf-parse"],
-  },
 };
 
 export default nextConfig;

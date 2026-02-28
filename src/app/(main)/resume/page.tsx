@@ -13,6 +13,52 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { RealJob } from "@/lib/jobs";
+import { fetchAllJobsClient, filterJobsClient } from "@/lib/jobs-client";
+
+// Client-side skill extraction patterns
+const SKILL_PATTERNS: Record<string, string[]> = {
+  "JavaScript": ["javascript", "js", "ecmascript", "es6"],
+  "TypeScript": ["typescript", "ts"],
+  "React": ["react", "reactjs", "react.js"],
+  "Next.js": ["next.js", "nextjs"],
+  "Node.js": ["node.js", "nodejs", "express"],
+  "Python": ["python", "django", "flask", "fastapi"],
+  "Java": ["java", "spring", "spring boot"],
+  "C++": ["c++", "cpp"],
+  "C#": ["c#", "csharp", ".net", "dotnet"],
+  "Go": ["go", "golang"],
+  "Swift": ["swift", "ios", "swiftui"],
+  "Kotlin": ["kotlin", "android"],
+  "Ruby": ["ruby", "rails"],
+  "PHP": ["php", "laravel"],
+  "SQL": ["sql", "mysql", "postgresql", "postgres"],
+  "MongoDB": ["mongodb", "mongo", "mongoose"],
+  "AWS": ["aws", "amazon web services", "ec2", "s3", "lambda"],
+  "Docker": ["docker", "containerization"],
+  "Kubernetes": ["kubernetes", "k8s"],
+  "Git": ["git", "github", "gitlab"],
+  "Machine Learning": ["machine learning", "ml", "deep learning", "tensorflow", "pytorch"],
+  "DevOps": ["devops", "terraform", "ansible"],
+  "UI/UX": ["ui/ux", "ux", "ui", "figma"],
+  "HTML/CSS": ["html", "css", "sass", "tailwind", "bootstrap"],
+  "GraphQL": ["graphql"],
+  "REST API": ["rest", "restful", "api"],
+};
+
+function extractSkillsClient(text: string): string[] {
+  const lowerText = text.toLowerCase();
+  const found: string[] = [];
+  for (const [skill, patterns] of Object.entries(SKILL_PATTERNS)) {
+    for (const pattern of patterns) {
+      const regex = new RegExp(`\\b${pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, "i");
+      if (regex.test(lowerText)) {
+        if (!found.includes(skill)) found.push(skill);
+        break;
+      }
+    }
+  }
+  return found;
+}
 
 export default function ResumePage() {
   const [file, setFile] = useState<File | null>(null);
@@ -47,32 +93,30 @@ export default function ResumePage() {
     setAnalyzed(false);
 
     try {
-      // Step 1: Extract skills from resume
-      const formData = new FormData();
-      formData.append("resume", file);
+      // Step 1: Extract text from resume (client-side)
+      let text = "";
+      if (file.type === "text/plain" || file.name.endsWith(".txt")) {
+        text = await file.text();
+      } else {
+        // For PDF/DOCX, read as text (basic extraction)
+        text = await file.text();
+      }
 
-      const parseRes = await fetch("/api/resume", {
-        method: "POST",
-        body: formData,
-      });
-      const parseData = await parseRes.json();
-
-      if (!parseRes.ok) {
-        setError(parseData.error || "Failed to parse resume");
+      if (!text || text.trim().length < 20) {
+        setError("Could not extract text from resume. Please upload a TXT file for best results.");
         setLoading(false);
         return;
       }
 
-      const extractedSkills = parseData.skills || [];
+      // Step 2: Extract skills client-side
+      const extractedSkills = extractSkillsClient(text);
       setSkills(extractedSkills);
 
-      // Step 2: Fetch matching jobs based on skills
+      // Step 3: Fetch matching jobs based on skills
       if (extractedSkills.length > 0) {
-        const jobsRes = await fetch(
-          `/api/jobs?skills=${encodeURIComponent(extractedSkills.join(","))}`
-        );
-        const jobsData = await jobsRes.json();
-        setJobs(jobsData.jobs || []);
+        const allJobs = await fetchAllJobsClient();
+        const matched = filterJobsClient(allJobs, { skills: extractedSkills });
+        setJobs(matched);
       } else {
         setJobs([]);
       }

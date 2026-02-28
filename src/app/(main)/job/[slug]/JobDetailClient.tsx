@@ -12,6 +12,7 @@ import MagneticButton from "@/components/animations/MagneticButton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { RealJob } from "@/lib/jobs";
+import { fetchAllJobsClient } from "@/lib/jobs-client";
 
 export default function JobDetailClient({ slug }: { slug: string }) {
   const [job, setJob] = useState<RealJob | null>(null);
@@ -21,9 +22,8 @@ export default function JobDetailClient({ slug }: { slug: string }) {
   useEffect(() => {
     async function fetchJob() {
       try {
-        const res = await fetch(`/api/jobs`);
-        const data = await res.json();
-        const found = (data.jobs || []).find((j: RealJob) => j.id === slug);
+        const allJobs = await fetchAllJobsClient();
+        const found = allJobs.find((j: RealJob) => j.id === slug);
         setJob(found || null);
       } catch {
         setJob(null);

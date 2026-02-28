@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { RealJob } from "@/lib/jobs";
+import { fetchAllJobsClient, filterJobsClient } from "@/lib/jobs-client";
 
 const MODES = ["All", "Remote", "Hybrid", "On-site"];
 const SKILLS = ["React", "Python", "Java", "TypeScript", "Node.js", "AWS", "Machine Learning", "DevOps", "UI/UX", "Go", "Swift", "C#"];
@@ -46,16 +47,15 @@ function JobsContent() {
   const fetchJobs = useCallback(async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (query) params.set("query", query);
-      if (location) params.set("location", location);
-      if (mode !== "All") params.set("mode", mode);
-      if (selectedSkills.length > 0) params.set("skills", selectedSkills.join(","));
-
-      const res = await fetch("/api/jobs?" + params.toString());
-      const data = await res.json();
-      setJobs(data.jobs || []);
-      setTotal(data.total || 0);
+      const allJobs = await fetchAllJobsClient(query || undefined);
+      const filtered = filterJobsClient(allJobs, {
+        query: query || undefined,
+        location: location || undefined,
+        mode: mode !== "All" ? mode : undefined,
+        skills: selectedSkills.length > 0 ? selectedSkills : undefined,
+      });
+      setJobs(filtered);
+      setTotal(filtered.length);
     } catch (err) {
       console.error("Failed to fetch jobs:", err);
     } finally {

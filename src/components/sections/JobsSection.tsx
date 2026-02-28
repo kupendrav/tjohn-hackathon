@@ -8,16 +8,16 @@ import AnimatedText from "@/components/animations/AnimatedText";
 import FadeInView from "@/components/animations/FadeInView";
 import StaggerGrid from "@/components/animations/StaggerGrid";
 import type { RealJob } from "@/lib/jobs";
+import { fetchAllJobsClient } from "@/lib/jobs-client";
 
 export default function JobsSection() {
   const [jobs, setJobs] = useState<RealJob[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/jobs")
-      .then((r) => r.json())
-      .then((data) => {
-        setJobs((data.jobs || []).slice(0, 6));
+    fetchAllJobsClient()
+      .then((allJobs) => {
+        setJobs(allJobs.slice(0, 6));
         setLoading(false);
       })
       .catch(() => setLoading(false));
