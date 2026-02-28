@@ -68,7 +68,7 @@ export default function Footer() {
           <div className="footer-col col-span-2 md:col-span-1">
             <Link href="/" className="flex items-center gap-2 mb-4 group">
               <Image
-                src="/logos/logo-base-32x32.png"
+                src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/logos/logo-base-32x32.png`}
                 width={28}
                 height={28}
                 alt="JobSeekz logo"

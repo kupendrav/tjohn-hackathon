@@ -99,7 +99,7 @@ export default function Navbar() {
         <div ref={logoRef} style={{ opacity: 0 }}>
           <Link href="/" className="flex items-center gap-2 group">
             <Image
-              src="/logos/logo-base-32x32.png"
+              src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/logos/logo-base-32x32.png`}
               width={32}
               height={32}
               alt="JobSeekz logo"

@@ -85,7 +85,7 @@ export default function LoginPage() {
           </section>
         </div>
         <div ref={imageRef} className="hidden md:block" style={{ opacity: 0 }}>
-          <Image src="/imgs/job_hunt_re_q203.svg" width={350} height={350} alt="Job searching illustration" className="drop-shadow-lg" />
+          <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH || ""}/imgs/job_hunt_re_q203.svg`} width={350} height={350} alt="Job searching illustration" className="drop-shadow-lg" />
         </div>
       </div>
     </GSAPProvider>

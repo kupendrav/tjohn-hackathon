@@ -1,3 +1,5 @@
+import { BASE_PATH } from "./utils";
+
 // Service to fetch real job listings from multiple free APIs
 // Sources: Remotive, Arbeitnow, The Muse
 
@@ -41,7 +43,7 @@ async function fetchRemotiveJobs(query?: string): Promise<RealJob[]> {
       postedDate: formatDate(job.publication_date),
       applyUrl: job.url || "#",
       source: "Remotive",
-      logo: job.company_logo || "/logos/logo-base-32x32.png",
+      logo: job.company_logo || `${BASE_PATH}/logos/logo-base-32x32.png`,
     }));
   } catch (err) {
     console.error("Remotive fetch error:", err);
@@ -73,7 +75,7 @@ async function fetchArbeitnowJobs(query?: string): Promise<RealJob[]> {
       postedDate: formatDate(job.created_at),
       applyUrl: job.url || "#",
       source: "Arbeitnow",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     }));
   } catch (err) {
     console.error("Arbeitnow fetch error:", err);
@@ -109,7 +111,7 @@ async function fetchJoboardJobs(): Promise<RealJob[]> {
       postedDate: formatDate(job.updated),
       applyUrl: job.link || "#",
       source: "Jooble",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     }));
   } catch {
     return [];
@@ -133,7 +135,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://careers.google.com",
       source: "Google Careers",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-microsoft-sde",
@@ -149,7 +151,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://careers.microsoft.com",
       source: "Microsoft Careers",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-amazon-sde2",
@@ -165,7 +167,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://www.amazon.jobs",
       source: "Amazon Jobs",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-meta-frontend",
@@ -181,7 +183,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://www.metacareers.com",
       source: "Meta Careers",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-apple-ios",
@@ -197,7 +199,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://jobs.apple.com",
       source: "Apple Jobs",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-netflix-backend",
@@ -213,7 +215,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://jobs.netflix.com",
       source: "Netflix Jobs",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-stripe-fullstack",
@@ -229,7 +231,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://stripe.com/jobs",
       source: "Stripe Jobs",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-tesla-ml",
@@ -245,7 +247,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://www.tesla.com/careers",
       source: "Tesla Careers",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-tcs-java",
@@ -261,7 +263,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://www.tcs.com/careers",
       source: "TCS Careers",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
     {
       id: "curated-infosys-fullstack",
@@ -277,7 +279,7 @@ function getCuratedListings(): RealJob[] {
       postedDate: "Recently",
       applyUrl: "https://www.infosys.com/careers",
       source: "Infosys Careers",
-      logo: "/logos/logo-base-32x32.png",
+      logo: `${BASE_PATH}/logos/logo-base-32x32.png`,
     },
   ];
 }
