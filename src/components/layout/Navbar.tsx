@@ -4,12 +4,15 @@ import React, { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { gsap } from "gsap";
+import { useSession, signOut } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/client/DarkModeToggle";
 
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/jobs", label: "Jobs" },
+  { href: "/company", label: "Companies" },
+  { href: "/resume", label: "Resume" },
   { href: "/job/new", label: "Post a Job" },
 ];
 
@@ -20,6 +23,7 @@ export default function Navbar() {
   const actionsRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: session } = useSession();
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -130,14 +134,33 @@ export default function Navbar() {
           style={{ opacity: 0 }}
         >
           <ModeToggle />
-          <Link href="/login">
-            <Button variant="outline" size="sm">
-              Login
-            </Button>
-          </Link>
-          <Link href="/signup">
-            <Button size="sm">Get Started</Button>
-          </Link>
+          {session?.user ? (
+            <>
+              <Link href="/profile">
+                <Button variant="ghost" size="sm" className="font-medium">
+                  {session.user.name || session.user.email}
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link href="/login">
+                <Button variant="outline" size="sm">
+                  Login
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button size="sm">Get Started</Button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -186,16 +209,36 @@ export default function Navbar() {
           </Link>
         ))}
         <div className="px-6 py-3 flex gap-2">
-          <Link href="/login" className="flex-1">
-            <Button variant="outline" size="sm" className="w-full">
-              Login
-            </Button>
-          </Link>
-          <Link href="/signup" className="flex-1">
-            <Button size="sm" className="w-full">
-              Get Started
-            </Button>
-          </Link>
+          {session?.user ? (
+            <>
+              <Link href="/profile" className="flex-1" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" size="sm" className="w-full">
+                  {session.user.name || "Profile"}
+                </Button>
+              </Link>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => { setMobileOpen(false); signOut({ callbackUrl: "/" }); }}
+              >
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="flex-1" onClick={() => setMobileOpen(false)}>
+                <Button variant="outline" size="sm" className="w-full">
+                  Login
+                </Button>
+              </Link>
+              <Link href="/signup" className="flex-1" onClick={() => setMobileOpen(false)}>
+                <Button size="sm" className="w-full">
+                  Get Started
+                </Button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </header>

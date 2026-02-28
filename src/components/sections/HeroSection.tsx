@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { gsap } from "gsap";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
@@ -13,6 +14,9 @@ export default function HeroSection() {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const searchRef = useRef<HTMLFormElement>(null);
   const badgesRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [locationQuery, setLocationQuery] = useState("");
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -96,18 +100,28 @@ export default function HeroSection() {
           ref={searchRef}
           className="mt-10 flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto"
           style={{ opacity: 0 }}
-          onSubmit={(e) => e.preventDefault()}
+          onSubmit={(e) => {
+            e.preventDefault();
+            const params = new URLSearchParams();
+            if (searchQuery) params.set("query", searchQuery);
+            if (locationQuery) params.set("location", locationQuery);
+            router.push(`/jobs?${params.toString()}`);
+          }}
         >
           <Input
             placeholder="Job title, keyword, or company"
             className="h-12 text-base flex-1"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
           <Input
             placeholder='City, state, or "remote"'
             className="h-12 text-base flex-1"
+            value={locationQuery}
+            onChange={(e) => setLocationQuery(e.target.value)}
           />
           <MagneticButton>
-            <Button size="lg" className="h-12 px-8 font-semibold">
+            <Button size="lg" className="h-12 px-8 font-semibold" type="submit">
               Search Jobs
             </Button>
           </MagneticButton>
@@ -121,7 +135,7 @@ export default function HeroSection() {
           {["React", "Python", "Remote", "Full Stack", "UI/UX"].map((tag) => (
             <Link
               key={tag}
-              href="/jobs"
+              href={`/jobs?query=${encodeURIComponent(tag)}`}
               className="px-3 py-1 text-xs font-medium rounded-full border border-border hover:border-primary hover:text-primary transition-all duration-200 hover:scale-105"
             >
               {tag}

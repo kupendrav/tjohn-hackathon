@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import SessionWrapper from "@/components/SessionWrapper";
 import localFont from "next/font/local";
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,14 +30,16 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} ${calsans.variable}`}>
-        <ThemeProvider
-          attribute="class"
-          enableSystem
-          disableTransitionOnChange
-          defaultTheme={"dark"}
-        >
-          {children}
-        </ThemeProvider>
+        <SessionWrapper>
+          <ThemeProvider
+            attribute="class"
+            enableSystem
+            disableTransitionOnChange
+            defaultTheme={"dark"}
+          >
+            {children}
+          </ThemeProvider>
+        </SessionWrapper>
       </body>
     </html>
   );

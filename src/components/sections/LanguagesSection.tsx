@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { programmingLanguages } from "@/data/languages";
 import FadeInView from "@/components/animations/FadeInView";
 import AnimatedText from "@/components/animations/AnimatedText";
@@ -22,9 +23,10 @@ export default function LanguagesSection() {
       </FadeInView>
 
       <StaggerGrid className="flex flex-wrap gap-6 sm:gap-10 justify-center sm:justify-start">
-        {programmingLanguages.map(({ src, title, jobCount }) => (
-          <div
+        {programmingLanguages.map(({ src, title, jobCount, query }) => (
+          <Link
             key={title}
+            href={`/jobs?query=${encodeURIComponent(query)}`}
             className="flex flex-col items-center gap-3 group cursor-pointer"
           >
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-card border shadow-sm group-hover:shadow-lg group-hover:shadow-primary/10 group-hover:border-primary/30 transition-all duration-300 flex items-center justify-center overflow-hidden">
@@ -37,12 +39,12 @@ export default function LanguagesSection() {
               />
             </div>
             <div className="text-center">
-              <h3 className="text-sm font-medium">{title}</h3>
+              <h3 className="text-sm font-medium group-hover:text-primary transition-colors">{title}</h3>
               <p className="text-xs text-muted-foreground">
                 {jobCount.toLocaleString()} jobs
               </p>
             </div>
-          </div>
+          </Link>
         ))}
       </StaggerGrid>
     </section>

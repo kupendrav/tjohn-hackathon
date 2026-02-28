@@ -1,10 +1,20 @@
-// Middleware disabled for static export
-// export { auth as middleware } from "@/auth"
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export function middleware() {
-  // no-op for static export
+export function middleware(request: NextRequest) {
+  const token =
+    request.cookies.get("authjs.session-token")?.value ||
+    request.cookies.get("__Secure-authjs.session-token")?.value;
+
+  if (!token) {
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [],
+  matcher: ["/profile/:path*", "/job/new/:path*"],
 };

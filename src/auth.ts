@@ -1,50 +1,39 @@
-import NextAuth, { AuthError } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+﻿import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 import { User } from "@/models/user.model";
 import { connectToDB } from "./lib/utils";
-import { redirect } from "next/navigation";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    GoogleProvider({
-      clientId: process.env.AUTH_GOOGLE_ID,
-      clientSecret: process.env.AUTH_GOOGLE_SECRET,
-}),
+    Credentials({
+      name: "credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
+        await connectToDB();
+        const user = await User.findOne({ email: credentials.email }).select("+password");
+        if (!user || !user.password) return null;
+        const isValid = await bcrypt.compare(credentials.password as string, user.password);
+        if (!isValid) return null;
+        return { id: user._id.toString(), name: user.name, email: user.email, image: user.image };
+      },
+    }),
   ],
+  session: { strategy: "jwt" },
   callbacks: {
-    signIn: async ({ user, account }) => {
-      console.log(user);
-
-      if (account?.provider === "google") {
-        try {
-          const { id, name, email, image } = user;
-
-          // to perform any operation on db we need to connect first
-          await connectToDB();
-
-          // check if email already exist
-          const foundUser = await User.findOne({ email });
-
-          // if already existing user then we don't create new document/row
-          if (foundUser) return true;
-
-          console.log("🔥🔥🔥🔥🔥", image);
-          const newUser = await User.create({
-            name: name?.toLowerCase().replaceAll(" ", ""),
-            googleId: id,
-            email,
-            image,
-          });
-          // redirect("/new");
-          return true;
-        } catch (error) {
-          throw new AuthError("Error while logging in...");
-        }
-      } else {
-        // this tells that something didn't go right
-        return false;
-      }
+    async jwt({ token, user }) {
+      if (user) { token.id = user.id; }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) { session.user.id = token.id as string; }
+      return session;
     },
   },
+  pages: { signIn: "/login" },
+  secret: process.env.AUTH_SECRET,
 });
