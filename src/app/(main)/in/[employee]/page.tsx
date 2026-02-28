@@ -1,18 +1,14 @@
-import MainBreadCrum from '@/components/MainBreadCrum'
-import MainFilter from '@/components/MainFilter'
-import Navbar from '@/components/Navbar'
-import React from 'react'
+import EmployeeClient from "./EmployeeClient";
 
-const page = ({params}: {params: {employee: string}}) => {
-  return (
-    <div className='md:px-20 px-10'>
-      <Navbar/>
-      <MainBreadCrum/>
-      <MainFilter/>
-      {params.employee}
-      
-      </div>
-  )
+export function generateStaticParams() {
+  // Pre-generate a few sample employee profiles
+  return [
+    { employee: "kupendra" },
+    { employee: "faizan" },
+    { employee: "john-doe" },
+  ];
 }
 
-export default page
+export default function EmployeePage({ params }: { params: { employee: string } }) {
+  return <EmployeeClient employee={params.employee} />;
+}

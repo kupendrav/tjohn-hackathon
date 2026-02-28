@@ -101,7 +101,7 @@ const MainFilter = () => {
             <DialogTitle className="mb-3">Are you absolutely sure?</DialogTitle>
             <DialogDescription className="grid grid-cols-2 gap-1">
               {skills.map((domain) => (
-                <CheckBoxWithText id={domain.toLowerCase().replaceAll(" ", "")}>
+                <CheckBoxWithText key={domain} id={domain.toLowerCase().replaceAll(" ", "")}>
                   {domain}
                 </CheckBoxWithText>
               ))}
@@ -120,7 +120,7 @@ const MainFilter = () => {
             <DialogTitle className="mb-3">Domains</DialogTitle>
             <DialogDescription className="grid grid-cols-2  gap-1">
               {domains.map((domain) => (
-                <CheckBoxWithText id={domain.toLowerCase().replaceAll(" ", "")}>
+                <CheckBoxWithText key={domain} id={domain.toLowerCase().replaceAll(" ", "")}>
                   {domain}
                 </CheckBoxWithText>
               ))}
