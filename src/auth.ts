@@ -5,6 +5,7 @@ import { User } from "@/models/user.model";
 import { connectToDB } from "./lib/utils";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  trustHost: true,
   providers: [
     Credentials({
       name: "credentials",

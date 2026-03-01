@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
-const basePath = "/tjohn-hackathon";
+const isProd = process.env.NODE_ENV === "production";
+const basePath = isProd ? "/tjohn-hackathon" : "";
 
 const nextConfig = {
-  output: "export",
-  basePath,
+  ...(isProd ? { output: "export" } : {}),
+  ...(basePath ? { basePath } : {}),
   env: {
     NEXT_PUBLIC_BASE_PATH: basePath,
   },
